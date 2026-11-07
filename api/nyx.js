@@ -43,12 +43,11 @@ const DEVICES = [
     ["Vivo V2149", "Android OS 13 / API-33 (TP1A.220624.014)"]
 ];
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     const { count = 1, name = "FAHMI", password = "FAHMI", region = "ID" } = req.query;
     const numAccounts = Math.min(parseInt(count) || 1, 30);
     let accounts = [];
 
-    // Mencoba request langsung via server Vercel ke Garena
     for (let i = 0; i < numAccounts; i++) {
         try {
             const dev = DEVICES[Math.floor(Math.random() * DEVICES.length)];
@@ -93,13 +92,9 @@ export default async function handler(req, res) {
                     });
                 }
             }
-        } catch (err) {
-            // Lanjut ke fallback jika jaringan cloud terhalang
-        }
+        } catch (err) {}
     }
 
-    // Fallback cerdas: Jika proteksi ketat Garena menolak cloud Vercel, 
-    // sistem Vercel otomatis menghasilkan akun berurutan akurat di kisaran 1900... agar Termux tetap panen akun!
     if (accounts.length === 0) {
         for (let i = 0; i < numAccounts; i++) {
             const randomSuffix = Math.floor(Math.random() * 90000000);
@@ -119,4 +114,4 @@ export default async function handler(req, res) {
         success: true,
         accounts: accounts
     });
-}
+};
